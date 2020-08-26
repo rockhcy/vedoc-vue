@@ -1,20 +1,24 @@
 <template>
-  <el-row>
-    <div class="h-i">
-      <a href=""><i class="el-icon-s-goods"></i>VE DOC</a>
-    </div>
-
-    <div class="header-input">
-      <el-input v-model="input"
-                placeholder="请输入内容"></el-input>
-      <el-button icon="el-icon-search"></el-button>
-    </div>
-    <div class="h-user-admin">
+  <el-container>
+    <el-header style="width:100%;padding: 0">
       <el-menu :default-active="activeIndex"
                class="el-menu-demo"
+               style="padding: 0 200px"
                mode="horizontal"
                @select="handleSelect">
-        <el-submenu index="1">
+
+        <el-menu-item index="5">
+          <a href="#"><i class="el-icon-s-goods"
+               style=""></i>VE DOC</a>
+        </el-menu-item>
+        <el-menu-item index="6">
+          <el-input v-model="input"
+                    placeholder="请输入内容"
+                    suffix-icon="el-icon-search">
+          </el-input>
+        </el-menu-item>
+        <el-submenu index="1"
+                    style="margin-left:200px">
           <template slot="title">admin</template>
           <el-menu-item index="2-1">个人中心</el-menu-item>
           <el-menu-item index="2-2">我的分享</el-menu-item>
@@ -25,8 +29,11 @@
         <el-menu-item index="4"><a href="https://www.ele.me"
              target="_blank">后台管理</a></el-menu-item>
       </el-menu>
-    </div>
-  </el-row>
+
+    </el-header>
+    <el-main>Main</el-main>
+  </el-container>
+
 </template>
 
 <script>
@@ -47,8 +54,8 @@ export default {
 </script>
 
 <style>
-.h-i {
-  position: absolute;
+/* .h-i { */
+/* position: absolute;
   display: inline-block;
   width: 50px;
 }
@@ -72,5 +79,5 @@ export default {
   position: absolute;
   display: inline-block;
   width: 400px;
-}
+} */
 </style>
