@@ -8,8 +8,12 @@
                @select="handleSelect">
 
         <el-menu-item index="5">
-          <a href="#"><i class="el-icon-s-goods"
-               style=""></i>VE DOC</a>
+          <a href="#/homeIndex">
+            <div><img src="../assets/vesystemlogo.png"
+                   style="width:61px;height:67px"
+                   alt=""></div>
+
+          </a>
         </el-menu-item>
         <el-menu-item index="6">
           <el-input v-model="input"
@@ -23,21 +27,25 @@
           <el-menu-item index="2-1">个人中心</el-menu-item>
           <el-menu-item index="2-2">我的分享</el-menu-item>
           <el-menu-item index="2-3">仓库管理</el-menu-item>
-          <el-menu-item index="2-3">退出登陆</el-menu-item>
+          <el-menu-item index="2-4">仓库市场</el-menu-item>
+          <el-menu-item index="2-5">退出登陆</el-menu-item>
         </el-submenu>
         <el-menu-item index="3">新建</el-menu-item>
-        <el-menu-item index="4"><a href="https://www.ele.me"
+        <el-menu-item index="4"><a href="#/home"
              target="_blank">后台管理</a></el-menu-item>
       </el-menu>
-
     </el-header>
-    <el-main>Main</el-main>
+    <addRepo ref="addRepo"></addRepo>
   </el-container>
 
 </template>
 
 <script>
+import addRepo from '@/components/addrepo'
 export default {
+  components: {
+    addRepo
+  },
   data () {
     return {
       input: '',
@@ -47,6 +55,16 @@ export default {
   methods: {
     handleSelect (key, keyPath) {
       console.log(key, keyPath);
+      switch (key) {
+        case "3":
+          console.log("3333333333333")
+          this.$refs.addRepo.addRepoVisible = true
+          break;
+        case "2-4":
+          console.log("2-4,2-4,2-4,2-4,2-4,2-4,2-4,")
+          this.$router.push('/reposShare')
+          break;
+      }
     }
   }
 
@@ -54,30 +72,4 @@ export default {
 </script>
 
 <style>
-/* .h-i { */
-/* position: absolute;
-  display: inline-block;
-  width: 50px;
-}
-.header-input {
-  width: 300px;
-  display: inline-block;
-  position: absolute;
-}
-.el-input {
-  position: absolute;
-  display: inline-block;
-}
-.el-input > input {
-  width: 200px;
-}
-.el-button {
-  position: absolute;
-  display: inline-block;
-}
-.h-user-admin {
-  position: absolute;
-  display: inline-block;
-  width: 400px;
-} */
 </style>
