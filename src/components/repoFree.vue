@@ -12,6 +12,7 @@ export default {
   methods: {
     enterRepo () {
       console.log("进入仓库")
+      this.$router.push({ path: '/fileManagement' })
     }
   }
 }

@@ -26,6 +26,13 @@ export default {
       loginName: "",
       password: ''
     }
+  },
+  methods: {
+    gotoLogin () {
+      this.$api.post("/user/userLogin", { params: { "loginname": this.loginName, "password": this.password } }).then(res => {
+        console.log(res.data)
+      })
+    }
   }
 }
 </script>

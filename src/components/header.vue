@@ -64,6 +64,9 @@ export default {
           console.log("2-4,2-4,2-4,2-4,2-4,2-4,2-4,")
           this.$router.push('/reposShare')
           break;
+        case "2-5":
+          this.$router.push('/')
+          break;
       }
     }
   }

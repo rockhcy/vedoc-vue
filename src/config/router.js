@@ -4,6 +4,7 @@ import login from '@/views/login/index'
 import Layout from '@/components/index'
 import homeIndex from '@/views/home/index'
 import reposShare from '@/views/reposShare'
+import fileManagement from '@/views/fileManagement/index'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
           path: '/reposShare',
           name: 'reposShare',
           component: reposShare
+        },
+        {
+          path: '/fileManagement',
+          name: 'fileManagement',
+          component: fileManagement
         },
       ]
     }

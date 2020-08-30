@@ -61,9 +61,10 @@ module.exports = {
     port: 8081,
     https: false,
     hotOnly: false,
+    before: app => { }
     // proxy: {  //配置跨域
     //   '/api': {
-    //     target: 'http://localhost:5001',  //这里后台的地址模拟的;应该填写你们真实的后台接口
+    //     target: 'http://localhost:9999',  //这里后台的地址模拟的;应该填写你们真实的后台接口
     //     ws: true,
     //     changOrigin: true,  //允许跨域
     //     pathRewrite: {
@@ -72,9 +73,9 @@ module.exports = {
     //   }, // 设置代理
     //   before: app => { }
     // },
-    // // 第三方插件配置
-    // pluginOptions: {
-    //   // ...
-    // }
+    // 第三方插件配置
+  },
+  pluginOptions: {
+    // ...
   }
 }
