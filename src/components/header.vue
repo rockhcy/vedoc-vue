@@ -57,11 +57,9 @@ export default {
       console.log(key, keyPath);
       switch (key) {
         case "3":
-          console.log("3333333333333")
           this.$refs.addRepo.addRepoVisible = true
           break;
         case "2-4":
-          console.log("2-4,2-4,2-4,2-4,2-4,2-4,2-4,")
           this.$router.push('/reposShare')
           break;
         case "2-5":

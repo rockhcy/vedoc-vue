@@ -1,7 +1,8 @@
 <template>
   <el-row style="width: max-content;">
     <el-button type="warning"
-               icon="el-icon-upload2">上传</el-button>
+               icon="el-icon-upload2"
+               @click="test">上传</el-button>
     <el-button type="warning"
                icon="el-icon-download">下载</el-button>
     <el-button type="warning"
@@ -13,7 +14,14 @@
 
 <script>
 export default {
+  methods: {
+    test () {
+      this.$api.get("/getBaseInfo").then(res => {
+        console.log(res)
 
+      })
+    }
+  }
 }
 </script>
 

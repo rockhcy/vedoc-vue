@@ -6,6 +6,7 @@ import 'element-ui/lib/theme-chalk/reset.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from './config/axiosConfig.js';
 import store from '@/config/store'
+import './icons'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
@@ -17,3 +18,4 @@ new Vue({
   router,
   store
 }).$mount('#app')
+

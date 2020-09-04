@@ -3,15 +3,18 @@
        v-on:click='enterRepo'>
     <i class="el-icon-connection
  hcy-repo"></i>
-    <h3> 我是协作仓库</h3>
+    <h3> {{item.repoName}}</h3>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    item: Object
+  },
   methods: {
     enterRepo () {
-      console.log("进入仓库")
+      console.log("进入仓库", this.item)
     }
   }
 }
