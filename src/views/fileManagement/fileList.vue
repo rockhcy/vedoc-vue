@@ -9,35 +9,19 @@
     </el-table-column>
     <el-table-column label="文件名">
       <template slot-scope="scope">
-        <svg-icon icon-class="setIcon(scope.row.type)"
-                  slot="prefix" />
-        <!-- <svg-icon icon-class="excle"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'xlsx'" />
-        <svg-icon icon-class="JPG"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'jpg'" />
-        <svg-icon icon-class="PDF"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'pdf'" />
-        <svg-icon icon-class="PNG"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'png'" />
-        <svg-icon icon-class="ppt"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'ppt'" />
-        <svg-icon icon-class="TET"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'txt'" />
-        <svg-icon icon-class="zip"
-                  slot="prefix"
-                  v-else-if="scope.row.type == 'zip'" />
-        <svg-icon icon-class="unknown"
-                  slot="prefix"
-                  v-else /> -->
-        <span>
-          {{ scope.row.filename }}
-        </span>
+        <div style="cursor: pointer;">
+          <svg-icon :icon-class=setIcon(scope.row.filename,scope.row.type)
+                    slot="prefix"
+                    style="    width: 26px;
+    height: 26px;
+    text-align: center;
+    margin: 0 10px 0 10px;
+    vertical-align: middle;" />
+          <span>
+            {{ scope.row.filename }}
+          </span>
+        </div>
+
       </template>
     </el-table-column>
     <el-table-column prop="data"
@@ -84,15 +68,36 @@ export default {
     handleSelectionChange (val) {
       this.multipleSelection = val;
     },
-    setIcon (fileType) {
+    setIcon (filename, fileType) {
       var iconType = "";
-      console.log(fileType.substr(fileType.lastIndexOf(".") + 1))
-      switch (fileType.substr(fileType.lastIndexOf(".") + 1)) {
+      if (fileType == '文件夹') {
+        return iconType = 'folder'
+      }
+      console.log(filename.substr(filename.lastIndexOf(".") + 1))
+      switch (filename.substr(filename.lastIndexOf(".") + 1)) {
         case 'xlsx':
           iconType = "excle"
           break
         case "jpg":
           iconType = "JPG"
+          break
+        case "pdf":
+          iconType = "PDF"
+          break
+        case "png":
+          iconType = "PNG"
+          break
+        case "ppt":
+          iconType = "ppt"
+          break
+        case "txt":
+          iconType = "TET"
+          break
+        case "word":
+          iconType = "WORD"
+          break
+        case "zip":
+          iconType = "zip"
           break
         default:
           iconType = "unknown"
