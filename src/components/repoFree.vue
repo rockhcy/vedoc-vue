@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     enterRepo () {
-      console.log("进入仓库")
+      sessionStorage.setItem("currentPath", this.item.repoPath)
       this.$router.push({ path: '/fileManagement' })
     }
   }

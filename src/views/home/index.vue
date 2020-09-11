@@ -20,7 +20,7 @@
     </el-row>
     <el-divider content-position="left">协作仓库</el-divider>
     <el-row :gutter="20"
-            v-if="repoList[3].length>0">
+            v-if="repoList[3] ==null ||repoList[3].length>0">
       <el-col :span="4"
               v-for="item in repoList[3]"
               :key="item.repoId">

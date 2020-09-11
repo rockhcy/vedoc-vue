@@ -1,5 +1,6 @@
 <template>
   <el-table ref="multipleTable"
+            @row-click="clickRow"
             :data="tableData"
             tooltip-effect="dark"
             style="width: 100%"
@@ -10,7 +11,7 @@
     <el-table-column label="文件名">
       <template slot-scope="scope">
         <div style="cursor: pointer;">
-          <svg-icon :icon-class=setIcon(scope.row.filename,scope.row.type)
+          <svg-icon :icon-class=setIcon(scope.row.name,scope.row.type)
                     slot="prefix"
                     style="    width: 26px;
     height: 26px;
@@ -18,20 +19,19 @@
     margin: 0 10px 0 10px;
     vertical-align: middle;" />
           <span>
-            {{ scope.row.filename }}
+            {{ scope.row.name }}
           </span>
         </div>
 
       </template>
     </el-table-column>
-    <el-table-column prop="data"
-                     label="修改时间">
-    </el-table-column>
-    <el-table-column prop="type"
-                     label="类型">
+    <el-table-column prop="modifyTime"
+                     label="修改时间"
+                     :formatter="formatterDate">
     </el-table-column>
     <el-table-column prop="size"
                      label="大小"
+                     :formatter="formatSize"
                      show-overflow-tooltip>
     </el-table-column>
   </el-table>
@@ -39,32 +39,22 @@
 
 <script>
 export default {
+  created () {
+    this.getFileList()
+  },
   data () {
     return {
-      tableData: [
-        {
-          filename: '新建文件夹',
-          data: '2012-08-28 15：35',
-          type: '文件夹',
-          size: '--'
-        },
-        {
-          filename: 'dist(2).zip',
-          data: '2012-08-28 15：35',
-          type: '360压缩 ZIP 文件',
-          size: '3.02 MB'
-        },
-        {
-          filename: 'dist(2).zip',
-          data: '2012-08-28 15：35',
-          type: '360压缩 ZIP 文件',
-          size: '3.02 MB'
-        }
-      ],
+      path: '',
+      tableData: [],
       multipleSelection: [],
     }
   },
   methods: {
+    getFileList () {
+      this.$api.get("repo/getFileList", { params: { "path": sessionStorage.getItem("currentPath") } }).then(res => {
+        this.tableData = res.data
+      })
+    },
     handleSelectionChange (val) {
       this.multipleSelection = val;
     },
@@ -73,7 +63,6 @@ export default {
       if (fileType == '文件夹') {
         return iconType = 'folder'
       }
-      console.log(filename.substr(filename.lastIndexOf(".") + 1))
       switch (filename.substr(filename.lastIndexOf(".") + 1)) {
         case 'xlsx':
           iconType = "excle"
@@ -104,8 +93,24 @@ export default {
       }
       return iconType
 
+    },
+    formatterDate (row) {
+      return this.$moment(new Date(row.modifyTime)).format("YYYY-DD-MM HH:mm:ss")
+    },
+    formatSize (row) {
+      if (row.size < 1024 * 1024) {
+        return Math.ceil(row.size / 1024) + " KB"
+      } else if (1024 * 1024 <= row.size < 1024 * 1024 * 1024) {
+        return (row.size / (1024 * 1024)).toFixed(2) + " MB"
+      } else {
+        return (row.size / (1024 * 1024 * 1024)).toFixed(2) + " GB"
+      }
+    },
+    clickRow (row) {
+      this.$refs.multipleTable.toggleRowSelection(row);
     }
   }
+
 }
 </script>
 
