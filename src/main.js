@@ -8,9 +8,12 @@ import axios from './config/axiosConfig.js';
 import store from '@/store/index.js'
 import './icons'
 import moment from 'moment'
+import contentmenu from 'v-contextmenu'
+import 'v-contextmenu/dist/index.css'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.use(contentmenu)
 Vue.prototype.$api = axios;
 Vue.prototype.$moment = moment;
 

@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     //存放的键值对就是所要管理的状态
     name: 'helloVueX',
-    currentPath: ''
+    currentPath: '',
+    reloadFile: false //是否需要刷新
   },
   methods: {
     //定义方法，注意不要在方法中直接修改state中的中的值

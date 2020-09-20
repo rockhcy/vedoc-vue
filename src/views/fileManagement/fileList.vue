@@ -10,19 +10,7 @@
     </el-table-column>
     <el-table-column label="文件名">
       <template slot-scope="scope">
-        <div style="cursor: pointer;">
-          <svg-icon :icon-class=setIcon(scope.row.name,scope.row.type)
-                    slot="prefix"
-                    style="    width: 26px;
-    height: 26px;
-    text-align: center;
-    margin: 0 10px 0 10px;
-    vertical-align: middle;" />
-          <span>
-            {{ scope.row.name }}
-          </span>
-        </div>
-
+        <contextMenu :row=scope.row></contextMenu>
       </template>
     </el-table-column>
     <el-table-column prop="modifyTime"
@@ -38,7 +26,12 @@
 </template>
 
 <script>
+import contextMenu from './contextMenu'
 export default {
+
+  components: {
+    contextMenu
+  },
   created () {
     this.getFileList()
   },
@@ -47,6 +40,19 @@ export default {
       path: '',
       tableData: [],
       multipleSelection: [],
+    }
+  },
+  computed: {
+    getReloadFileState () {
+      return this.$store.state.reloadFile;
+    }
+  },
+  watch: {
+    getReloadFileState (val) {
+      if (val) {
+        console.log("刷新页面")
+        this.getFileList()
+      }
     }
   },
   methods: {
