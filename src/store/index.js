@@ -7,8 +7,8 @@ const store = new Vuex.Store({
   state: {
     //存放的键值对就是所要管理的状态
     name: 'helloVueX',
-    currentPath: '',
-    reloadFile: false //是否需要刷新
+    reloadFile: false, //是否需要刷新
+    fileSelected: [] //filelist中被选中的文件列表
   },
   methods: {
     //定义方法，注意不要在方法中直接修改state中的中的值
@@ -19,13 +19,13 @@ const store = new Vuex.Store({
   //所有state中的值如果要修改，都因该在mutations 中定义方法来改变。
   //组件中使用 this.$store.commit('edit') 来调用对应的方法，带参数的这样提交，this.$store.commit('edit',{age:15,sex:'男'})，多个参数建议封装为对象
   mutations: {
-    // 设置当前路径
-    setCurrentPath (state, newPath) {
-      state.currentPath = newPath
-    },
     edit (state) {
       state.name = "hcy"
       console.log(state.name)
+    },
+    // 设置
+    setFileSelectedValue (state, list) {
+      state.fileSelected = list
     }
   },
   //通过getters可以对state中的成员进行修改并返回给外界，组件中调用这么写：this.$store.getters.nameInfo

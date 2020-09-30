@@ -5,6 +5,10 @@ import Layout from '@/components/index'
 import homeIndex from '@/views/home/index'
 import reposShare from '@/views/reposShare'
 import fileManagement from '@/views/fileManagement/index'
+import onlineOffice from '@/views/onlineOffice/index'
+import test from '@/views/test/test'
+import usercenter from '@/views/userCenter/index'
+import fileSharePage from '@/views/fileSharePage/index'
 
 
 Vue.use(Router)
@@ -25,6 +29,22 @@ export default new Router({
       component: Login
     },
     {
+      path: '/test',
+      name: 'test',
+      component: test
+    },
+    {
+      path: '/fileSharePage',
+      name: 'fileSharePage',
+      component: fileSharePage
+    },
+    {
+      path: '/onlineOffice',
+      name: 'onlineOffice',
+      component: onlineOffice,
+      hidden: true
+    },
+    {
       path: '/Layout',
       name: 'Layout',
       component: Layout,
@@ -43,6 +63,11 @@ export default new Router({
           path: '/fileManagement',
           name: 'fileManagement',
           component: fileManagement
+        },
+        {
+          path: '/usercenter',
+          name: 'usercenter',
+          component: usercenter
         },
       ]
     }

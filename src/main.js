@@ -1,3 +1,4 @@
+import '../public/config.js'
 import Vue from 'vue'
 import App from './App.vue'
 import router from '@/config/router.js'
@@ -10,6 +11,12 @@ import './icons'
 import moment from 'moment'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
+
+
+
+
+const VueUploadComponent = require('vue-upload-component')
+Vue.component('file-upload', VueUploadComponent)
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);

@@ -7,7 +7,7 @@ module.exports = {
   outputDir: 'dist',
   devServer: {
     port: 8081,
-    proxy: 'http://localhost:10002'
+    //proxy: 'http://localhost:10002'
   },
   parallel: require('os').cpus().length > 1,
   chainWebpack (config) {

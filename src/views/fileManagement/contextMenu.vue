@@ -4,6 +4,9 @@
                    :theme="theme">
       <v-contextmenu-item @click="deleteFile(row)">删除</v-contextmenu-item>
       <v-contextmenu-item @click="showVersionList(row)">查看版本记录</v-contextmenu-item>
+
+      <v-contextmenu-item @click="openOffice(row)">打开</v-contextmenu-item>
+      <v-contextmenu-item @click="openShareBox(row)">分享</v-contextmenu-item>
       <!-- <v-contextmenu-item @click="rollBackRevisionToPreviousVersion(row)">恢复到上一个版本</v-contextmenu-item> -->
 
       <!-- <v-contextmenu-item divider></v-contextmenu-item>
@@ -39,7 +42,9 @@
       </span>
     </div>
     <el-dialog title="历史版本记录"
-               :visible.sync="versionDialogTableVisible">
+               :visible.sync="versionDialogTableVisible"
+               class="versionDialog">
+
       <el-table :data="versionList">
         <el-table-column property="time"
                          label="日期"
@@ -59,12 +64,75 @@
           </template>
         </el-table-column>
       </el-table>
+      <tooltipInfo class="tooltipInfo"
+                   :info='info'></tooltipInfo>
+    </el-dialog>
+
+    <el-dialog :title="shareTitle"
+               :visible.sync="shareDialogVisible"
+               width="670px">
+      <el-form label-width="100px"
+               :model="shareForm">
+        <el-form-item label="分享链接">
+          <el-input v-model="shareForm.url"
+                    disabled
+                    style="width:320px"></el-input>
+          <el-button type="success">复制链接</el-button>
+          <el-button type="success">打开链接</el-button>
+        </el-form-item>
+        <el-form-item label="提取密码">
+          <el-input v-model="shareForm.pwd"
+                    placeholder="请输入提取码，空白表示不需要提取密码"
+                    style="width:320px"></el-input>
+          <el-button type="success">随机生成</el-button>
+        </el-form-item>
+        <el-form-item label="有效时间">
+          <template>
+            <el-select v-model="shareForm.expire"
+                       placeholder="请选择">
+              <el-option v-for="item in options"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-form-item>
+        <el-form-item label="权限设置">
+          <el-checkbox-group v-model="shareForm.auth">
+            <el-checkbox label="上传"></el-checkbox>
+            <el-checkbox label="下载"></el-checkbox>
+            <el-checkbox label="删除"></el-checkbox>
+            <el-checkbox label="修改(开发中)"
+                         disabled></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="分享二维码">
+          <vue-qr :logoSrc="imageUrl"
+                  :text="text"
+                  :size="200"></vue-qr>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="shareDialogVisible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="shareDialogVisible = false">分 享</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import tooltipInfo from '@/components/tooltipInfo'
+import vueQr from 'vue-qr'
+// import test from '@/views/test/test'
 export default {
+  components: {
+    tooltipInfo,
+    vueQr
+  },
   name: 'Submenu',
   props: {
     theme: String,
@@ -73,13 +141,65 @@ export default {
   data () {
     return {
       versionList: [],
-      versionDialogTableVisible: false
+      versionDialogTableVisible: false,
+      info: '您可以通过点击【下载】来获取文件的历史版本，也能点击【恢复】将对应版本恢复到工作区中',
+      shareTitle: '',
+      shareDialogVisible: false,
+      shareForm: {
+        url: '',
+        shareId: '',
+        shareame: '',
+        pwd: '',
+        expire: '2',
+        auth: ['下载']
+      },
+      options: [{
+        value: '1',
+        label: '永久有效'
+      }, {
+        value: '2',
+        label: '30天'
+      }, {
+        value: '3',
+        label: '7天'
+      }, {
+        value: '4',
+        label: '1天'
+      }],
+      text: '你是真无聊，看到二维码就扫！\n\r 看什么看，说的就是你',//二维码中的内容
+      imageUrl: require("../../assets/vesystemlogo.png"),//二维码中的logo
     }
   },
   methods: {
+    openShareBox (row) {
+      console.log(row)
+      this.shareTitle = "文件分享：" + row.name
+      this.$api.get("/share/produceShareId").then(res => {
+        this.shareForm.shareId = res.data.data
+        this.shareForm.shareame = row.name
+        this.shareForm.url = "http://192.168.50.143:8081/#/fenxiang/?shareId=" + res.data.data
+        this.shareDialogVisible = true
+        this.text = "http://192.168.50.143:8081/#/fenxiang/?shareId=" + res.data.data
+        console.log(res.data.data)
+      })
+    },
+
+    openOffice (row) {
+      console.log(row)
+      var filename = row.name;
+      var argus = { "fileType": filename.substr(filename.lastIndexOf(".") + 1), "title": filename, "filePath": row.path }
+      this.$api.get("/office/getPage", { params: argus }).then(res => {
+        console.log(res.data)
+        sessionStorage.setItem('officeFileOption', JSON.stringify(res.data))
+        let routeData = this.$router.resolve({ path: '/onlineOffice' });
+        window.open(routeData.href, '_blank');
+      })
+    },
     deleteFile (row) {
-      var argus = { "filePath": row.path }
-      this.$api.delete("repo/deleteFile", { params: argus }).then(res => {
+      var files = [];
+      files.push(row.path)
+      console.log(files)
+      this.$api.post("repo/deleteFile", { files: files }).then(res => {
         console.log(res)
         this.$store.state.reloadFile = true
       })
@@ -90,7 +210,7 @@ export default {
       this.$api.get("repo/getDocHistoryList", { params: argus }).then(res => {
         console.log(res)
         this.versionList = res.data
-        this.$store.state.reloadFile = true
+
       })
     },
     // rollBackRevisionToPreviousVersion (row) {
@@ -117,9 +237,6 @@ export default {
       argus.append("entryPath", row.entryName)
       argus.append("dirPath", row.repoPath)
       argus.append("version", row.objectId)
-      // this.$api.post("repo/downloadRevision", argus).then(res => {
-      //   console.log(res)
-      // })
       this.$api({
         method: 'post',
         url: 'repo/downloadRevision',
@@ -127,7 +244,6 @@ export default {
         responseType: 'arraybuffer'
       }
       ).then((res) => {
-        console.log(res.headers['filename'])
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
         link.href = url;
@@ -148,11 +264,12 @@ export default {
     },
     setIcon (filename, fileType) {
       var iconType = "";
-      if (fileType == '文件夹') {
+      if (fileType == 1) {
         return iconType = 'folder'
       }
       switch (filename.substr(filename.lastIndexOf(".") + 1)) {
         case 'xlsx':
+        case 'xls':
           iconType = "excle"
           break
         case "jpg":
@@ -170,7 +287,9 @@ export default {
         case "txt":
           iconType = "TET"
           break
-        case "word":
+        case "doc":
+        case "docx":
+
           iconType = "WORD"
           break
         case "zip":
@@ -186,9 +305,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .box {
   width: 100%;
   cursor: pointer;
+}
+.versionDialog {
+  position: relative;
+  .el-dialog__body {
+    position: relative;
+    .el-tooltip {
+      position: absolute;
+      top: -34px;
+      left: 134px;
+      font-size: 20px;
+    }
+  }
 }
 </style>

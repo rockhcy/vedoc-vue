@@ -14,8 +14,8 @@ export default {
   },
   methods: {
     enterRepo () {
-      console.log("进入仓库", this.item)
       sessionStorage.setItem("currentPath", this.item.repoPath)
+      sessionStorage.setItem("repoId", this.item.repoId)
       this.$router.push({ path: '/fileManagement' })
     }
   }

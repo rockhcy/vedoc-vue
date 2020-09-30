@@ -63,8 +63,10 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val;
+      this.$store.commit('setFileSelectedValue', val)
     },
     setIcon (filename, fileType) {
+      console.log("66666", fileType)
       var iconType = "";
       if (fileType == '文件夹') {
         return iconType = 'folder'

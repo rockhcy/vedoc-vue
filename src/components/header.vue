@@ -59,6 +59,9 @@ export default {
         case "3":
           this.$refs.addRepo.addRepoVisible = true
           break;
+        case "2-1":
+          this.$router.push('/usercenter')
+          break;
         case "2-4":
           this.$router.push('/reposShare')
           break;

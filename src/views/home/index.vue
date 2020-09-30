@@ -45,7 +45,6 @@ export default {
     repoVersion,
     repoTeam
   },
-  inject: ['reload'],
   data () {
     return {
       repoList: {}
@@ -62,9 +61,7 @@ export default {
         this.repoList = res.data
       })
     },
-    reloadPge () {
-      this.reload()
-    }
+
   }
 
 }

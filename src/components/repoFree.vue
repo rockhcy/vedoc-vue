@@ -20,6 +20,7 @@ export default {
   methods: {
     enterRepo () {
       sessionStorage.setItem("currentPath", this.item.repoPath)
+      sessionStorage.setItem("repoId", this.item.repoId)
       this.$router.push({ path: '/fileManagement' })
     }
   }
