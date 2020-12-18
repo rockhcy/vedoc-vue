@@ -62,6 +62,12 @@ export default {
         case "2-1":
           this.$router.push('/usercenter')
           break;
+        case "2-2":
+          this.$router.push('/docShare')
+          break;
+        case "2-3":
+          this.$router.push('/repoAdmin')
+          break;
         case "2-4":
           this.$router.push('/reposShare')
           break;

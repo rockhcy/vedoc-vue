@@ -9,6 +9,9 @@ import onlineOffice from '@/views/onlineOffice/index'
 import test from '@/views/test/test'
 import usercenter from '@/views/userCenter/index'
 import fileSharePage from '@/views/fileSharePage/index'
+import docShare from '@/views/docShare/index'
+import repoAdmin from '@/views/repoAdmin/index'
+
 
 
 Vue.use(Router)
@@ -68,6 +71,16 @@ export default new Router({
           path: '/usercenter',
           name: 'usercenter',
           component: usercenter
+        },
+        {
+          path: '/docShare',
+          name: 'docShare',
+          component: docShare
+        },
+        {
+          path: '/repoAdmin',
+          name: 'repoAdmin',
+          component: repoAdmin
         },
       ]
     }

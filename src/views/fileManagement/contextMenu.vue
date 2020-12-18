@@ -69,6 +69,7 @@
     </el-dialog>
 
     <el-dialog :title="shareTitle"
+               label-position="right"
                :visible.sync="shareDialogVisible"
                width="670px">
       <el-form label-width="100px"
@@ -81,10 +82,11 @@
           <el-button type="success">打开链接</el-button>
         </el-form-item>
         <el-form-item label="提取密码">
-          <el-input v-model="shareForm.pwd"
+          <el-input v-model="shareForm.sharePwd"
                     placeholder="请输入提取码，空白表示不需要提取密码"
                     style="width:320px"></el-input>
-          <el-button type="success">随机生成</el-button>
+          <el-button type="success"
+                     @click="createRandom">随机生成</el-button>
         </el-form-item>
         <el-form-item label="有效时间">
           <template>
@@ -118,7 +120,7 @@
             class="dialog-footer">
         <el-button @click="shareDialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="shareDialogVisible = false">分 享</el-button>
+                   @click="docShare">分 享</el-button>
       </span>
     </el-dialog>
   </div>
@@ -149,45 +151,86 @@ export default {
         url: '',
         shareId: '',
         shareame: '',
-        pwd: '',
-        expire: '2',
+        sharePwd: '',
+        expire: 30,
         auth: ['下载']
       },
       options: [{
-        value: '1',
-        label: '永久有效'
+        value: 365,
+        label: '1年(365天)'
       }, {
-        value: '2',
+        value: 30,
         label: '30天'
       }, {
-        value: '3',
+        value: 7,
         label: '7天'
       }, {
-        value: '4',
+        value: 1,
         label: '1天'
       }],
-      text: '你是真无聊，看到二维码就扫！\n\r 看什么看，说的就是你',//二维码中的内容
+      text: '未知错误，请联系开发人员\n\r qq:337815986',//二维码中的内容
       imageUrl: require("../../assets/vesystemlogo.png"),//二维码中的logo
     }
   },
   methods: {
+    createRandom () {
+      let pasArr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+      let password = '';
+      let pasArrLen = pasArr.length;
+      for (var i = 0; i < 6; i++) {
+        let x = Math.floor(Math.random() * pasArrLen);
+        password += pasArr[x];
+      }
+      this.shareForm.sharePwd = password
+    },
+    docShare () {
+      let shareAuth = 0
+      for (var a in this.shareForm.auth) {
+        switch (this.shareForm.auth[a]) {
+          case '上传':
+            shareAuth += 1;
+            break
+          case '下载':
+            shareAuth += 2;
+            break
+          case '删除':
+            shareAuth += 4;
+            break
+        }
+      }
+      let now = new Date()
+      let expireTimeLong = now.getTime() / 1000 + 60 * 60 * 24 * this.shareForm.expire
+      let argus = {
+        "shareId": this.shareForm.shareId,
+        "shareName": this.shareForm.shareName,
+        "repoId": sessionStorage.getItem("repoId"),
+        "relativePath": sessionStorage.getItem("currentPath"),
+        "shareAuth": shareAuth,
+        "sharePwd": this.shareForm.sharePwd,
+        "expireTimeLong": expireTimeLong
+      }
+      this.$api.post("/share/docShare", argus).then(res => {
+        console.log(res)
+        this.shareDialogVisible = false
+      })
+    },
     openShareBox (row) {
       console.log(row)
       this.shareTitle = "文件分享：" + row.name
       this.$api.get("/share/produceShareId").then(res => {
-        this.shareForm.shareId = res.data.data
-        this.shareForm.shareame = row.name
-        this.shareForm.url = "http://192.168.50.143:8081/#/fenxiang/?shareId=" + res.data.data
+        this.shareForm.shareId = res.data
+        this.shareForm.shareName = row.name
+        this.shareForm.url = window.GLOBAL_CONFIG_SETTING.WEB_BASE + "/#/fenxiang/?shareId=" + res.data.data
         this.shareDialogVisible = true
-        this.text = "http://192.168.50.143:8081/#/fenxiang/?shareId=" + res.data.data
-        console.log(res.data.data)
+        this.text = window.GLOBAL_CONFIG_SETTING.WEB_BASE + "/#/fenxiang/?shareId=" + res.data.data
+        console.log(res.data)
       })
     },
 
     openOffice (row) {
       console.log(row)
-      var filename = row.name;
-      var argus = { "fileType": filename.substr(filename.lastIndexOf(".") + 1), "title": filename, "filePath": row.path }
+      let filename = row.name;
+      let argus = { "fileType": filename.substr(filename.lastIndexOf(".") + 1), "title": filename, "filePath": row.path }
       this.$api.get("/office/getPage", { params: argus }).then(res => {
         console.log(res.data)
         sessionStorage.setItem('officeFileOption', JSON.stringify(res.data))
@@ -196,7 +239,7 @@ export default {
       })
     },
     deleteFile (row) {
-      var files = [];
+      let files = [];
       files.push(row.path)
       console.log(files)
       this.$api.post("repo/deleteFile", { files: files }).then(res => {
@@ -213,14 +256,6 @@ export default {
 
       })
     },
-    // rollBackRevisionToPreviousVersion (row) {
-    //   let argus = new FormData();
-    //   argus.append("entryPath", row.path.replace(sessionStorage.getItem("currentPath"), ""))
-    //   argus.append("dirPath", sessionStorage.getItem("currentPath"))
-    //   this.$api.post("repo/rollBackRevisionToPreviousVersion", argus).then(res => {
-    //     console.log(res)
-    //   })
-    // },
     rollBackRevisionByVersionId (index, row) {
       console.log(index, row)
       let argus = new FormData();
