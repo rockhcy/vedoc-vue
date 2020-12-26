@@ -35,7 +35,7 @@
          class="dialog-footer">
       <el-button @click="addRepoVisible = false">取 消</el-button>
       <el-button type="primary"
-                 @click="dialogFormVisible = false">提 交</el-button>
+                 @click="addRepo">提 交</el-button>
     </div>
   </el-dialog>
 </template>
@@ -55,7 +55,14 @@ export default {
       },
       formLabelWidth: '120px'
     }
-
+  },
+  methods: {
+    addRepo () {
+      this.$api.post("repo/addRepo", this.form).then(res => {
+        console.log(res.data)
+        this.addRepoVisible = false
+      })
+    }
   }
 
 }

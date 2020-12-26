@@ -3,10 +3,13 @@
     <div class="login-div">
       <el-row>
         <div class="login-d-ti">
-          <span class="login-title">和信文件管理系统</span>
+          <span class="login-title">和信文件管理系统
+            <!-- <svg-icon icon-class="ppt"
+                      slot="prefix" /> -->
+          </span>
         </div>
       </el-row>
-      <el-input v-model="loginName"
+      <el-input v-model="username"
                 placeholder="请输入用户名"></el-input>
       <el-input v-model="password"
                 placeholder="请输入密码"></el-input>
@@ -14,6 +17,7 @@
         <el-button type="primary"
                    @click="gotoLogin">登录</el-button>
       </el-row>
+
     </div>
   </div>
 
@@ -23,15 +27,18 @@
 export default {
   data () {
     return {
-      loginName: "",
+      username: "",
       password: ''
     }
   },
   methods: {
     gotoLogin () {
-      this.$api.post("/user/userLogin", { params: { "loginname": this.loginName, "password": this.password } }).then(res => {
-        console.log(res.data)
+      this.$api.post("/user/userLogin", { "username": this.username, "password": this.password }).then(res => {
+        console.log(res)
+        sessionStorage.setItem("token", res.data.token)
+        this.$router.push({ path: '/homeIndex' });
       })
+
     }
   }
 }
